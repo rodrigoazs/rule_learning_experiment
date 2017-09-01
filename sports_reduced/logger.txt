@@ -1,0 +1,72 @@
+[DEBUG] Output level: DEBUG
+[INFO] Random seed: 0.9291211301384936
+[INFO] Computing scores: 0.0220s
+[INFO] Number of examples (M): 54
+[INFO] Positive weight (P): 12.8278
+[INFO] Negative weight (N): 41.1722
+[DEBUG] Best rule so far: athleteplayssport(A,B) :- true [0.24067964155142266]
+[DEBUG] Candidates for iteration 1:
+[DEBUG] ==================================
+[DEBUG] athleteplayssport(A,B) :- true 0.24067964155142266
+[DEBUG] ==================================
+[DEBUG] Best rule so far: athleteplayssport(A,B) :- athleteplaysforteam(A,C) [0.24248502349594497]
+[DEBUG] Candidates for iteration 2:
+[DEBUG] ==================================
+[DEBUG] athleteplayssport(A,B) :- athleteplaysforteam(A,C) 0.24248502349594497
+[DEBUG] ==================================
+[DEBUG] Best rule so far: athleteplayssport(A,B) :- athleteplaysforteam(A,C), teamplayssport(C,B) [0.4757098411681468]
+[DEBUG] Candidates for iteration 3:
+[DEBUG] ==================================
+[DEBUG] athleteplayssport(A,B) :- athleteplaysforteam(A,C), teamplayssport(C,B) 0.4757098411681468
+[DEBUG] athleteplayssport(A,B) :- athleteplaysforteam(A,C), teamalsoknownas(C,D) 0.3423034697417717
+[DEBUG] athleteplayssport(A,B) :- athleteplaysforteam(A,C), teamalsoknownas(D,C) 0.0
+[DEBUG] ==================================
+[DEBUG] Best rule so far: athleteplayssport(A,B) :- athleteplaysforteam(A,C), teamplayssport(C,B), teamalsoknownas(C,D) [0.6635548823467106]
+[DEBUG] Candidates for iteration 4:
+[DEBUG] ==================================
+[DEBUG] athleteplayssport(A,B) :- athleteplaysforteam(A,C), teamplayssport(C,B), teamalsoknownas(C,D) 0.6635548823467106
+[DEBUG] athleteplayssport(A,B) :- athleteplaysforteam(A,C), teamplayssport(C,B), teamalsoknownas(D,C) 0.0
+[DEBUG] athleteplayssport(A,B) :- athleteplaysforteam(A,C), teamalsoknownas(D,C), teamplayssport(D,B) 0.0
+[DEBUG] ==================================
+[INFO] RULE LEARNED: 0.96898449::athleteplayssport(A,B) :- athleteplaysforteam(A,C), teamplayssport(C,B), teamalsoknownas(C,D) 0.8706639771082036
+[DEBUG] Best rule so far: athleteplayssport(A,B) :- true [0.06220189379732602]
+[DEBUG] Candidates for iteration 1:
+[DEBUG] ==================================
+[DEBUG] athleteplayssport(A,B) :- true 0.06220189379732602
+[DEBUG] ==================================
+[DEBUG] Best rule so far: athleteplayssport(A,B) :- true [0.06220189379732602]
+[DEBUG] Candidates for iteration 2:
+[DEBUG] ==================================
+[DEBUG] athleteplayssport(A,B) :- athleteplaysforteam(A,C) 0.06079488096609876
+[DEBUG] ==================================
+[DEBUG] Best rule so far: athleteplayssport(A,B) :- athleteplaysforteam(A,C), teamplayssport(C,B) [0.18714396989446372]
+[DEBUG] Candidates for iteration 3:
+[DEBUG] ==================================
+[DEBUG] athleteplayssport(A,B) :- athleteplaysforteam(A,C), teamplayssport(C,B) 0.18714396989446372
+[DEBUG] athleteplayssport(A,B) :- athleteplaysforteam(A,C), teamalsoknownas(D,C) 0.09084856963071557
+[DEBUG] athleteplayssport(A,B) :- athleteplaysforteam(A,C), teamalsoknownas(C,D) 0.0
+[DEBUG] ==================================
+[DEBUG] Best rule so far: athleteplayssport(A,B) :- athleteplaysforteam(A,C), teamplayssport(C,B), teamalsoknownas(C,D) [0.20486429054485844]
+[DEBUG] Candidates for iteration 4:
+[DEBUG] ==================================
+[DEBUG] athleteplayssport(A,B) :- athleteplaysforteam(A,C), teamplayssport(C,B), teamalsoknownas(C,D) 0.20486429054485844
+[DEBUG] athleteplayssport(A,B) :- athleteplaysforteam(A,C), teamplayssport(C,B), teamalsoknownas(D,C) 0.1735439612382745
+[DEBUG] athleteplayssport(A,B) :- athleteplaysforteam(A,C), teamalsoknownas(D,C), teamplayssport(D,B) 0.1735439612382745
+[DEBUG] ==================================
+[INFO] RULE LEARNED: 0.99677581::athleteplayssport(A,B) :- athleteplaysforteam(A,C), teamplayssport(C,B), teamalsoknownas(C,D) 0.8707536431291709
+[DEBUG] Best rule so far: athleteplayssport(A,B) :- true [0.05498095330609877]
+[DEBUG] Candidates for iteration 1:
+[DEBUG] ==================================
+[DEBUG] athleteplayssport(A,B) :- true 0.05498095330609877
+[DEBUG] ==================================
+[DEBUG] Best rule so far: athleteplayssport(A,B) :- true [0.05498095330609877]
+[DEBUG] Candidates for iteration 2:
+[DEBUG] ==================================
+[DEBUG] athleteplayssport(A,B) :- athleteplaysforteam(A,C) 0.05348952409559415
+[DEBUG] ==================================
+[DEBUG] Best rule so far: athleteplayssport(A,B) :- athleteplaysforteam(A,C), teamplayssport(C,B) [0.1731550176618439]
+[DEBUG] Candidates for iteration 3:
+[DEBUG] ==================================
+[DEBUG] athleteplayssport(A,B) :- athleteplaysforteam(A,C), teamplayssport(C,B) 0.1731550176618439
+[DEBUG] athleteplayssport(A,B) :- athleteplaysforteam(A,C), teamalsoknownas(D,C) 0.0905817554391575
+[DEBUG] ==================================

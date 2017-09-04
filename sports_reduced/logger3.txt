@@ -1,0 +1,28 @@
+[DEBUG] Output level: DEBUG
+[INFO] Random seed: 0.43622493628596504
+[INFO] Computing scores: 0.0313s
+[INFO] Number of examples (M): 26
+[INFO] Positive weight (P): 10.8246
+[INFO] Negative weight (N): 15.1754
+[DEBUG] Best rule so far: teamplayssport(A,B) :- true [0.42281106479727165]
+[DEBUG] Candidates for iteration 1:
+[DEBUG] ==================================
+[DEBUG] teamplayssport(A,B) :- true 0.42281106479727165
+[DEBUG] ==================================
+[DEBUG] Best rule so far: teamplayssport(A,B) :- athleteplaysforteam(C,A) [0.48326615384615385]
+[DEBUG] Candidates for iteration 2:
+[DEBUG] ==================================
+[DEBUG] teamplayssport(A,B) :- athleteplaysforteam(C,A) 0.48326615384615385
+[DEBUG] teamplayssport(A,B) :- teamalsoknownas(A,C) 0.4424389892976526
+[DEBUG] teamplayssport(A,B) :- athleteplayssport(C,B) 0.42280069804473647
+[DEBUG] teamplayssport(A,B) :- teamalsoknownas(C,A) 0.0
+[DEBUG] ==================================
+[DEBUG] Best rule so far: teamplayssport(A,B) :- athleteplaysforteam(C,A), athleteplayssport(C,B) [0.8054395428860818]
+[DEBUG] Candidates for iteration 3:
+[DEBUG] ==================================
+[DEBUG] teamplayssport(A,B) :- athleteplaysforteam(C,A), teamalsoknownas(A,D) 0.4721102564102564
+[DEBUG] teamplayssport(A,B) :- athleteplaysforteam(C,A), teamalsoknownas(D,A) 0.4708976588628762
+[DEBUG] teamplayssport(A,B) :- teamalsoknownas(A,C), athleteplayssport(D,B) 0.44242926005547994
+[DEBUG] teamplayssport(A,B) :- athleteplayssport(C,B), teamalsoknownas(A,D) 0.44242926005547994
+[DEBUG] teamplayssport(A,B) :- teamalsoknownas(C,A), teamalsoknownas(D,C) 0.4352290594208491
+[DEBUG] ==================================

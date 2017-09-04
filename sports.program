@@ -1,0 +1,45 @@
+t(_)::stress(X) :- person(X).
+t(_)::smokes(X) :- stress(X).
+t(_)::smokes(X) :- friend(X,Y), smokes(Y).
+
+person(holleybottom).
+person(cesarlobue).
+person(margertwire).
+person(jacquelincrossman).
+person(lashawnalancon).
+person(tijuanadeschenes).
+person(desmondclaudio).
+person(aracelijezierski).
+person(krishnaauerbach).
+person(mickigraziano).
+person(estaminogue).
+person(karoleshowers).
+person(carinwhitesel).
+person(trudysenegal).
+person(lessaban).
+person(keritheberge).
+person(rodrickrutland).
+person(kizzychristain).
+person(agnusflesher).
+person(marisfarrington).
+
+friend(holleybottom,marisfarrington).
+friend(cesarlobue,cesarlobue).
+friend(margertwire,estaminogue).
+friend(jacquelincrossman,lashawnalancon).
+friend(lashawnalancon,margertwire).
+friend(tijuanadeschenes,desmondclaudio).
+friend(desmondclaudio,estaminogue).
+friend(aracelijezierski,jacquelincrossman).
+friend(krishnaauerbach,lessaban).
+friend(mickigraziano,margertwire).
+friend(estaminogue,rodrickrutland).
+friend(karoleshowers,margertwire).
+friend(carinwhitesel,jacquelincrossman).
+friend(trudysenegal,lashawnalancon).
+friend(lessaban,jacquelincrossman).
+friend(keritheberge,desmondclaudio).
+friend(rodrickrutland,lashawnalancon).
+friend(kizzychristain,kizzychristain).
+friend(agnusflesher,agnusflesher).
+friend(marisfarrington,jacquelincrossman).

@@ -103,9 +103,9 @@ for d in relations['teamalsoknownas']:
 #teams = (teamplaysagainstteam.intersection(teamalsoknownas)).intersection(teamplayssport)
 teams = teamalsoknownas.intersection(teamplayssport)
 # reduce size
-#teams = list(teams)
-#shuffle(teams)
-#teams = teams[:int(0.2*len(teams))]
+teams = list(teams)
+shuffle(teams)
+teams = teams[:int(0.15*len(teams))]
 
 e['athlete'] = set()
 e['sport'] = set()
@@ -138,29 +138,29 @@ entities_and_values.extend(e['sportsteam'])
 entities_and_values.extend(e['athlete'])
 entities_and_values.extend(e['sportsleague'])
 
-# set modes and target
-target = 'athleteplayssport'
-modes = ['teamalsoknownas','athleteplaysforteam','teamplayssport']
+with open('sports.program', 'w') as file:
+    file.write('t(_)::teamplayssport(A,B) :- athleteplaysforteam(C,A), athleteplayssport(C,B).\n')
+    #file.write('t(_)::teamalsoknownas(A,B) :- teamalsoknownas(A,C), teamalsoknownas(C,B).\n')
+    file.write('t(_)::athleteplayssport(A,B) :- athleteplaysforteam(A,C), teamplayssport(C,B).\n')
+    file.write('\n')
+    file.write('athleteplayssport(A,B) :- athlete(A), sport(B).\n')
+    #file.write('teamplayssport(A,B) :- sportsteam(A), sport(B).\n')
+    file.write('teamalsoknownas(A,B) :- sportsteam(A), sportsteam(B).\n')
+    file.write('athleteplaysforteam(A,B) :- athlete(A), sportsteam(B).\n')
+    file.write('\n')
+    for sportsteam in e['sportsteam']:
+        if sportsteam not in ['stateuniversity', 'stateuniversities']:
+            file.write('sportsteam('+str(sportsteam)+').\n')
+    file.write('\n')
+    for athlete in e['athlete']:
+        file.write('athlete('+str(athlete)+').\n')
+    file.write('\n')
+    for sport in e['sport']:
+        file.write('sport('+str(sport)+').\n')
+    file.write('\n')
+            
 
-with open('sports.settings', 'w') as file:
-    for mode in modes:
-        file.write('mode('+str(mode)+'(+,+)).\n')
-        file.write('mode('+str(mode)+'(+,-)).\n')
-        file.write('mode('+str(mode)+'(-,+)).\n')
-    file.write('\n')
-    for key, value in relations.items():
-        first = value[0]
-        file.write('base('+str(first[1])+'('+str(first[4])+','+str(first[5])+')).\n')
-    file.write('\n')
-    file.write('learn('+target+'/2).\n')
-    file.write('\n')
-    file.write('example_mode(auto).\n')
-
-with open('sports.data', 'w') as file:
-    for key, value in relations.items():
-        first = value[0]
-        file.write('base('+str(first[1])+'('+str(first[4])+','+str(first[5])+')).\n')
-    file.write('\n')
+with open('sports.examples', 'w') as file:
     for key, value in relations.items():
         for d in value:
             if d[0] in entities_and_values and d[2] in entities_and_values and d[0] not in ['stateuniversity', 'stateuniversities'] and d[2] not in ['stateuniversity', 'stateuniversities']:
@@ -168,5 +168,9 @@ with open('sports.data', 'w') as file:
                 #    if random.random() < 0.1:
                 #        file.write(str(d[3])[:6]+'::' +str(d[1]) + '(' +str(d[0])+ ', '+str(d[2])+ ').\n')
                 #else:
-                file.write(str(d[3])[:6]+'::' +str(d[1]) + '(' +str(d[0])+ ', '+str(d[2])+ ').\n')
+                if random.random() < float(d[3]):
+                    file.write('evidence('+str(d[1])+'('+str(d[0])+', '+str(d[2])+'), true).\n')
+                else:
+                    file.write('evidence('+str(d[1])+'('+str(d[0])+', '+str(d[2])+'), false).\n')
+                    #file.write(str(d[3])[:6]+'::' +str(d[1]) + '(' +str(d[0])+ ', '+str(d[2])+ ').\n')
         file.write('\n')

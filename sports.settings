@@ -1,9 +1,3 @@
-mode(teamplayssport(+,+)).
-mode(teamplayssport(+,-)).
-mode(teamplayssport(-,+)).
-mode(athleteplaysforteam(+,+)).
-mode(athleteplaysforteam(+,-)).
-mode(athleteplaysforteam(-,+)).
 mode(teamplaysinleague(+,+)).
 mode(teamplaysinleague(+,-)).
 mode(teamplaysinleague(-,+)).
@@ -13,21 +7,27 @@ mode(teamalsoknownas(-,+)).
 mode(athleteledsportsteam(+,+)).
 mode(athleteledsportsteam(+,-)).
 mode(athleteledsportsteam(-,+)).
-mode(teamplaysagainstteam(+,+)).
-mode(teamplaysagainstteam(+,-)).
-mode(teamplaysagainstteam(-,+)).
+mode(athleteplaysforteam(+,+)).
+mode(athleteplaysforteam(+,-)).
+mode(athleteplaysforteam(-,+)).
 mode(athleteplaysinleague(+,+)).
 mode(athleteplaysinleague(+,-)).
 mode(athleteplaysinleague(-,+)).
+mode(teamplaysagainstteam(+,+)).
+mode(teamplaysagainstteam(+,-)).
+mode(teamplaysagainstteam(-,+)).
+mode(teamplayssport(+,+)).
+mode(teamplayssport(+,-)).
+mode(teamplayssport(-,+)).
 
-base(teamplayssport(sportsteam,sport)).
-base(athleteplaysforteam(athlete,sportsteam)).
 base(teamplaysinleague(sportsteam,sportsleague)).
+base(athleteplayssport(athlete,sport)).
 base(teamalsoknownas(sportsteam,sportsteam)).
 base(athleteledsportsteam(athlete,sportsteam)).
-base(teamplaysagainstteam(sportsteam,sportsteam)).
-base(athleteplayssport(athlete,sport)).
+base(athleteplaysforteam(athlete,sportsteam)).
 base(athleteplaysinleague(athlete,sportsleague)).
+base(teamplaysagainstteam(sportsteam,sportsteam)).
+base(teamplayssport(sportsteam,sport)).
 
 learn(athleteplayssport/2).
 

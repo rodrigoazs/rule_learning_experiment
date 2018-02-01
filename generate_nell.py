@@ -40,12 +40,12 @@ for data in dataset.values:
     entity = entity.lower() #.replace('_', '')
     value = value.lower() #.replace('_', '')
     #re.sub('[^a-zA-Z]', '', title[j])
-    entity = re.sub('[^a-z_0-9]', '', entity)
-    value = re.sub('[^a-z_0-9]', '', value)
+    entity = re.sub('[^a-z]', '', entity)
+    value = re.sub('[^a-z]', '', value)
     
     #entity and value cannot start with '_', otherwise it is considered variable (?)
-    entity = entity[1:] if entity[0] == '_' else entity
-    value = value[1:] if value[0] == '_' else value
+    #entity = entity[1:] if entity[0] == '_' else entity
+    #value = value[1:] if value[0] == '_' else value
               
     if relation in relations:
         relations[relation].append([entity, relation, value, probability, entity_type, value_type])
@@ -55,6 +55,22 @@ for data in dataset.values:
 print('Number of facts per predicate (NELL sports dataset)')
 for relation in relations:
     print(relation + '\t' + str(len(relations[relation])))
+    
+consts = {}
+for key, value in relations.items():
+    first_entity_type = value[0][4]
+    first_value_type = value[0][5]
+    for d in value:
+        if first_entity_type not in consts:
+            consts[first_entity_type] = set()
+        if first_value_type not in consts:
+            consts[first_value_type] = set()
+        consts[first_entity_type].add(d[0])
+        consts[first_value_type].add(d[2])
+        
+print('Number of constants per type (NELL sports dataset)')
+for const in consts:
+    print(const + '\t' + str(len(consts[const])))
 
 with open('sports.settings', 'w') as file:
     for relation in relations:

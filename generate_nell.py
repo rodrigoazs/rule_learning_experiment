@@ -18,7 +18,7 @@ import re
 # m = 1
 # p = 0.99
 # beam = 5 (default)
-# rule length = 4 (not mentioned in paper)
+# rule length = 5 (not mentioned in paper)
 
 # configuration
 dataset = pd.read_csv('NELL.sports.small.csv')
@@ -43,7 +43,7 @@ for data in dataset.values:
     entity = re.sub('[^a-z_0-9]', '', entity)
     value = re.sub('[^a-z_0-9]', '', value)
     
-    #entity and value cannot start with '_' otherwise is considered variable (?)
+    #entity and value cannot start with '_', otherwise it is considered variable (?)
     entity = entity[1:] if entity[0] == '_' else entity
     value = value[1:] if value[0] == '_' else value
               

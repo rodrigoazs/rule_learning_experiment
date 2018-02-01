@@ -5104,7 +5104,7 @@
 1.0::teamplaysagainstteam(new_york_red_bulls, philadelphia_athletics).
 1.0::teamplaysagainstteam(new_york_red_bulls, undefeated_new_england_patriots).
 0.9999::teamplaysagainstteam(new_york_red_bulls, d_backs).
-0.9999::teamplaysagainstteam(new_york_red_bulls, _skins).
+0.9999::teamplaysagainstteam(new_york_red_bulls, skins).
 0.9999::teamplaysagainstteam(new_york_red_bulls, niners).
 0.9999::teamplaysagainstteam(new_york_red_bulls, washington_senators).
 0.9375::teamplaysagainstteam(sixers, houston_rockets_nba).
@@ -6254,7 +6254,7 @@
 0.9927::teamplaysagainstteam(eagles, bucs).
 1.0::teamplaysagainstteam(eagles, pittsburgh_steelers_sunday).
 0.9375::teamplaysagainstteam(eagles, seahawks).
-0.9999::teamplaysagainstteam(eagles, _skins).
+0.9999::teamplaysagainstteam(eagles, skins).
 0.9999::teamplaysagainstteam(eagles, falcons).
 1.0::teamplaysagainstteam(eagles, then_chicago_cardinals).
 0.9843::teamplaysagainstteam(eagles, new_york_football_giants).
@@ -6290,7 +6290,7 @@
 0.9831::teamplaysagainstteam(nittany_lions, wesley_wolverines).
 0.9375::teamplaysagainstteam(nittany_lions, ohio_state_university).
 1.0::teamplaysagainstteam(new_york_jets, red_sox_this_season).
-1.0::teamplaysagainstteam(new_york_jets, _skins).
+1.0::teamplaysagainstteam(new_york_jets, skins).
 1.0::teamplaysagainstteam(new_york_jets, oakland_raiders).
 1.0::teamplaysagainstteam(new_york_jets, pats).
 1.0::teamplaysagainstteam(new_york_jets, dallas_cowboys).
@@ -6525,7 +6525,7 @@
 0.9967::teamplaysagainstteam(wesley_wolverines, penn_state).
 0.9829::teamplaysagainstteam(wesley_wolverines, ohio_state_university).
 1.0::teamplaysagainstteam(rangers, philadelphia_athletics).
-1.0::teamplaysagainstteam(rangers, _skins).
+1.0::teamplaysagainstteam(rangers, skins).
 1.0::teamplaysagainstteam(rangers, montreal_canadiens).
 1.0::teamplaysagainstteam(rangers, d_backs).
 1.0::teamplaysagainstteam(rangers, niners).

@@ -42,6 +42,10 @@ for data in dataset.values:
     #re.sub('[^a-zA-Z]', '', title[j])
     entity = re.sub('[^a-z_0-9]', '', entity)
     value = re.sub('[^a-z_0-9]', '', value)
+    
+    #entity and value cannot start with '_' otherwise is considered variable (?)
+    entity = entity[1:] if entity[0] == '_' else entity
+    value = value[1:] if value[0] == '_' else value
               
     if relation in relations:
         relations[relation].append([entity, relation, value, probability, entity_type, value_type])

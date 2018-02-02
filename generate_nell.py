@@ -14,6 +14,14 @@ from random import shuffle
 import random
 import re
 
+def create_folds(data, size):
+    length = int(len(data)/size) #length of each fold
+    folds = []
+    for i in range((size-1)):
+        folds += [data[i*length:(i+1)*length]]
+    folds += [data[(size-1)*length:len(data)]]
+    return folds
+
 # experiment
 # m = 1
 # p = 0.99
@@ -22,9 +30,11 @@ import re
 
 # configuration
 dataset = pd.read_csv('NELL.sports.small.csv')
-target = 'athleteplayssport'
+target = 'athleteplaysforteam'
 target_parity = 2
+target_entity = 'athlete'
 example_mode = 'balance'
+n_folds = 4
 # ============================================
 
 #relations_accepted = ['athleteplayssport','teamalsoknownas','athleteplaysforteam','teamplayssport']
@@ -40,12 +50,12 @@ for data in dataset.values:
     entity = entity.lower() #.replace('_', '')
     value = value.lower() #.replace('_', '')
     #re.sub('[^a-zA-Z]', '', title[j])
-    entity = re.sub('[^a-z]', '', entity)
-    value = re.sub('[^a-z]', '', value)
+    entity = re.sub('[^a-z_]', '', entity)
+    value = re.sub('[^a-z_]', '', value)
     
     #entity and value cannot start with '_', otherwise it is considered variable (?)
-    #entity = entity[1:] if entity[0] == '_' else entity
-    #value = value[1:] if value[0] == '_' else value
+    entity = entity[1:] if entity[0] == '_' else entity
+    value = value[1:] if value[0] == '_' else value
               
     if relation in relations:
         relations[relation].append([entity, relation, value, probability, entity_type, value_type])
@@ -72,7 +82,7 @@ print('Number of constants per type (NELL sports dataset)')
 for const in consts:
     print(const + '\t' + str(len(consts[const])))
 
-with open('sports.settings', 'w') as file:
+with open('probfoil/sports.settings', 'w') as file:
     for relation in relations:
         if relation != target:
             file.write('mode('+str(relation)+'(+,+)).\n')
@@ -87,12 +97,17 @@ with open('sports.settings', 'w') as file:
     file.write('\n')
     file.write('example_mode('+ example_mode +').\n')
 
-with open('sports.data', 'w') as file:
-#    for key, value in relations.items():
-#        first = value[0]
-#        file.write('base('+str(first[1])+'('+str(first[4])+','+str(first[5])+')).\n')
-#    file.write('\n')
-    for key, value in relations.items():
-        for d in value:
-            file.write(str(d[3])[:6]+'::' +str(d[1]) + '(' +str(d[0])+ ', '+str(d[2])+ ').\n')
-        file.write('\n')
+ent = list(consts[target_entity])
+random.shuffle(ent)
+ent = create_folds(ent, n_folds)
+for i in range(n_folds):
+    with open('probfoil/sports_fold_'+str(i+1)+'.data', 'w') as file:
+    #    for key, value in relations.items():
+    #        first = value[0]
+    #        file.write('base('+str(first[1])+'('+str(first[4])+','+str(first[5])+')).\n')
+    #    file.write('\n')
+        for key, value in relations.items():
+            for d in value:
+                if d[1] != target or d[0] in ent[i]:
+                    file.write(str(d[3])[:6]+'::' +str(d[1]) + '(' +str(d[0])+ ', '+str(d[2])+ ').\n')
+            file.write('\n')

@@ -1,15 +1,15 @@
 mode(teamplaysinleague(+,+)).
 mode(teamplaysinleague(+,-)).
 mode(teamplaysinleague(-,+)).
+mode(athleteplayssport(+,+)).
+mode(athleteplayssport(+,-)).
+mode(athleteplayssport(-,+)).
 mode(teamalsoknownas(+,+)).
 mode(teamalsoknownas(+,-)).
 mode(teamalsoknownas(-,+)).
 mode(athleteledsportsteam(+,+)).
 mode(athleteledsportsteam(+,-)).
 mode(athleteledsportsteam(-,+)).
-mode(athleteplaysforteam(+,+)).
-mode(athleteplaysforteam(+,-)).
-mode(athleteplaysforteam(-,+)).
 mode(athleteplaysinleague(+,+)).
 mode(athleteplaysinleague(+,-)).
 mode(athleteplaysinleague(-,+)).
@@ -29,6 +29,6 @@ base(athleteplaysinleague(athlete,sportsleague)).
 base(teamplaysagainstteam(sportsteam,sportsteam)).
 base(teamplayssport(sportsteam,sport)).
 
-learn(athleteplayssport/2).
+learn(athleteplaysforteam/2).
 
 example_mode(balance).

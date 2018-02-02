@@ -111,10 +111,10 @@ with open('sports.pl', 'w') as file:
         for key, value in relations.items():
             for d in value[fold]:
                 file.write(str(d[1]) + '(' +str(d[0])+ ', '+str(d[2])+ ').\n')
-                #if d[1] == target:
-                    #sports = consts['sport']
-                    #n_sports = sports.difference(set([d[2]]))
-                    #file.write('neg('+str(d[1]) + '(' +str(d[0])+ ','+str(random.choice(list(n_sports)))+ ')).\n')
+                if d[1] == target:
+                    sports = consts['sport']
+                    n_sports = sports.difference(set([d[2]]))
+                    file.write('neg('+str(d[1]) + '(' +str(d[0])+ ','+str(random.choice(list(n_sports)))+ ')).\n')
         #file.write('end(model(f'+ str(fold+1) +')).\n')
         if fold == 0:
             file.write('end(model(f1)).\n')

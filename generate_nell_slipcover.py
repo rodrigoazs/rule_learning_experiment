@@ -82,7 +82,7 @@ with open('sports.pl', 'w') as file:
         if relation != target:
             file.write('input('+str(relation)+'/2).\n')
     file.write('\n')
-    file.write('determination('+ target +'/2,'+ target +'/2).\n')
+    #file.write('determination('+ target +'/2,'+ target +'/2).\n')
     for relation in relations:
         if relation != target:
             file.write('determination('+ target +'/2,'+ relation +'/2).\n')

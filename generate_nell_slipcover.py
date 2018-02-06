@@ -27,7 +27,7 @@ def create_folds(data, size):
 
 # configuration
 dataset = pd.read_csv('NELL.sports.small.csv')
-target = 'athleteplayssport'
+target = 'athleteplaysforteam'
 number_of_folds = 10
 # ============================================
 

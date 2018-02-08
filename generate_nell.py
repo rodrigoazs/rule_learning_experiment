@@ -34,7 +34,7 @@ target = 'athleteplaysforteam'
 target_parity = 2
 target_entity = 'athlete'
 example_mode = 'balance'
-n_folds = 4
+n_folds = 5
 # ============================================
 
 #relations_accepted = ['athleteplayssport','teamalsoknownas','athleteplaysforteam','teamplayssport']
@@ -82,26 +82,25 @@ print('Number of constants per type (NELL sports dataset)')
 for const in consts:
     print(const + '\t' + str(len(consts[const])))
 
-with open('probfoil/sports.settings', 'w') as file:
-    for relation in relations:
-        if relation != target:
-            file.write('mode('+str(relation)+'(+,+)).\n')
-            file.write('mode('+str(relation)+'(+,-)).\n')
-            file.write('mode('+str(relation)+'(-,+)).\n')
-    file.write('\n')
-    for key, value in relations.items():
-        first = value[0]
-        file.write('base('+str(first[1])+'('+str(first[4])+','+str(first[5])+')).\n')
-    file.write('\n')
-    file.write('learn('+target+'/'+str(target_parity)+').\n')
-    file.write('\n')
-    file.write('example_mode('+ example_mode +').\n')
-
 ent = list(consts[target_entity])
 random.shuffle(ent)
 ent = create_folds(ent, n_folds)
 for i in range(n_folds):
-    with open('probfoil/sports_fold_'+str(i+1)+'.data', 'w') as file:
+    with open('probfoil/sports_'+ target +'_fold_'+str(i+1)+'.data', 'w') as file:
+        for relation in relations:
+            if relation != target:
+                file.write('mode('+str(relation)+'(+,+)).\n')
+                file.write('mode('+str(relation)+'(+,-)).\n')
+                file.write('mode('+str(relation)+'(-,+)).\n')
+        file.write('\n')
+        for key, value in relations.items():
+            first = value[0]
+            file.write('base('+str(first[1])+'('+str(first[4])+','+str(first[5])+')).\n')
+        file.write('\n')
+        file.write('learn('+target+'/'+str(target_parity)+').\n')
+        file.write('\n')
+        file.write('example_mode('+ example_mode +').\n')
+        file.write('\n')
     #    for key, value in relations.items():
     #        first = value[0]
     #        file.write('base('+str(first[1])+'('+str(first[4])+','+str(first[5])+')).\n')
@@ -110,4 +109,3 @@ for i in range(n_folds):
             for d in value:
                 if d[1] != target or d[0] in ent[i]:
                     file.write(str(d[3])[:6]+'::' +str(d[1]) + '(' +str(d[0])+ ', '+str(d[2])+ ').\n')
-            file.write('\n')

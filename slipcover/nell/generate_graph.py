@@ -6,11 +6,35 @@ Created on Tue Feb  6 11:25:48 2018
 """
 # Importing the libraries
 import numpy as np
-import matplotlib.pyplot as plt
 import pandas as pd
 from random import shuffle
 import random
 import re
+
+# configuration
+dataset = pd.read_csv('../../NELL.sports.small.csv')
+target = 'athleteplaysforteam'
+n_folds = 10
+n_train_of_athletes = 300
+n_test_of_athletes = 50
+max_neg_examples_per_pos = 10
+configs = ''':- use_module(library(slipcover)).
+
+:- if(current_predicate(use_rendering/1)).
+:- use_rendering(c3).
+:- use_rendering(lpad).
+:- endif.
+
+:-sc.
+
+:- set_sc(verbosity,2).
+:- set_sc(depth_bound,false).
+:- set_sc(neg_ex,given).
+
+bg([]).
+
+in([]).'''
+# ============================================
 
 def create_folds(data, size):
     length = int(len(data)/size) #length of each fold
@@ -50,28 +74,20 @@ class Graph:
             self.nodes[objec] = obj
         sub.add(relation, obj)
         
-def traverse(root, store, depth=0, max_depth=5):
+def traverse(root, store, depth=0, max_depth=4):
     if depth < max_depth:
         for relation in root.relations:
             #print(root.name + ' ' + relation.type + ' ' + relation.object.name)
             store.add(root.name + ':' + relation.type + ':' + relation.object.name)
             traverse(relation.object, store, depth+1, max_depth)
 
-# configuration
-dataset = pd.read_csv('NELL.sports.small.csv')
-target = 'athleteplaysforteam'
-number_of_folds = 10
-n_train_of_athletes = 300
-n_test_of_athletes = 50
-max_neg_examples = 10
-# ============================================
-
-#relations_accepted = ['athleteplayssport','teamalsoknownas','athleteplaysforteam','teamplayssport']
 g = Graph()
 n = 0
-#relations = {}
-athletes = set()
-teams = set()
+subjects = set()
+objects = set()
+relations_but_target = set()
+modes = {}
+
 for data in dataset.values:
     entity_type = (data[1].split(':'))[1]
     entity = (data[1].split(':'))[2]
@@ -88,22 +104,23 @@ for data in dataset.values:
        
     g.add(entity, relation, value)
     n += 1
+    if relation not in modes:
+        modes[relation] = [entity_type, value_type]
     if relation == 'athleteplaysforteam':
-        athletes.add(entity)
-        teams.add(value)
+        subjects.add(entity)
+        objects.add(value)
+    else:
+        relations_but_target.add(relation)
         
-print('Number of relations: '+str(n))
+print('Number of tuples: ' + str(n))
 
-relations_set_train = set()
-relations_set_test = set()
-t = list(athletes)
+t = list(subjects)
 random.shuffle(t)
-train = t[:n_train_of_athletes]
-test = t[-n_test_of_athletes:]
+subjects_folds = create_folds(t, n_folds)
 
 def generate(train, g, relations_set_train): 
     for i in train:
-        traverse(g.nodes[i], relations_set_train, 0,4)
+        traverse(g.nodes[i], relations_set_train, 0, 4)
     
     relations = {}
     relations_set = list(relations_set_train)
@@ -119,20 +136,33 @@ def generate(train, g, relations_set_train):
     data = ''
     for key, value in relations.items():
         for d in value:
-            data += str(d[1]) + '(' +str(d[0])+ ', '+str(d[2])+ ').\n'
+            data += str(d[1]) + '(' +str(d[0])+ ','+str(d[2])+ ').\n'
             if d[1] == target:
-                n_sports = teams.difference(set([d[2]]))
-                for m in range(max_neg_examples):
+                n_sports = objects.difference(set([d[2]]))
+                for m in range(max_neg_examples_per_pos):
                     data += 'neg('+str(d[1]) + '(' +str(d[0])+ ','+str(random.choice(list(n_sports)))+ ')).\n'
     return data
 
-a = generate(train, g, relations_set_train)
-b = generate(test, g, relations_set_test)
-
-with open('sports_from_g.pl', 'w') as file:
-    file.write('begin(model(f1)).\n')
-    file.write(a)
-    file.write('end(model(f1)).\n')
-    file.write('begin(model(f2)).\n')
-    file.write(b)
-    file.write('end(model(f2)).\n')
+with open('nell_sports_'+ target +'.pl', 'w') as file:
+    file.write(configs)
+    file.write('\n')
+    for i in range(n_folds):
+        file.write('fold(f'+ str(i+1) +',[f'+ str(i+1) +']).\n')
+    file.write('\n')
+    file.write('output('+ target +'/2).\n')
+    for i in relations_but_target:
+        file.write('input('+ i + '/3).\n')
+    file.write('\n')
+    for i in relations_but_target:
+        file.write('determination('+ target +'/2,'+ i + '/2).\n')
+    file.write('\n')
+    for key, value in modes.items():
+        mode_type = 'modeh' if key == target else 'modeb'
+        file.write(mode_type + '(*,'+str(key)+'(+'+str(value[0])+',+'+str(value[1])+')).\n')
+        file.write(mode_type + '(*,'+str(key)+'(+'+str(value[0])+',-'+str(value[1])+')).\n')
+        file.write(mode_type + '(*,'+str(key)+'(-'+str(value[0])+',+'+str(value[1])+')).\n')
+        
+    for fold in range(n_folds):
+        file.write('begin(model(f'+ str(fold+1) +')).\n')
+        file.write(generate(subjects_folds[fold], g, set()))
+        file.write('end(model(f'+ str(fold+1) +')).\n')

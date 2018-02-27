@@ -53076,3 +53076,5 @@ athleteledsportsteam(martin,nets).
 athleteledsportsteam(michaelfinley,sanantonio).
 athleteledsportsteam(boozer,utahjazz).
 end(model(f10)).
+
+:- induce([f1], P).

@@ -166,3 +166,5 @@ with open('nell_sports_'+ target +'.pl', 'w') as file:
         file.write('begin(model(f'+ str(fold+1) +')).\n')
         file.write(generate(subjects_folds[fold], g, set()))
         file.write('end(model(f'+ str(fold+1) +')).\n')
+        
+    file.write('induce_par([f1,f2,f3,f4,f5,f6,f7,f8,f9],P),test(P,[f10],LL,AUCROC,ROC,AUCPR,PR).')

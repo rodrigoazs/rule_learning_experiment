@@ -53075,3 +53075,5 @@ athleteledsportsteam(martin,nets).
 athleteledsportsteam(michaelfinley,sanantonio).
 athleteledsportsteam(boozer,utahjazz).
 end(model(f10)).
+
+induce_par([f1,f2,f3,f4,f5,f6,f7,f8,f9],P),test(P,[f10],LL,AUCROC,ROC,AUCPR,PR).

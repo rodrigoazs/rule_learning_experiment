@@ -10,6 +10,7 @@
 :- set_sc(verbosity,2).
 :- set_sc(depth_bound,false).
 :- set_sc(neg_ex,given).
+:- set_sc(specialization,mode).
 
 bg([]).
 

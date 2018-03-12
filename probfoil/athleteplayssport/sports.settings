@@ -29,6 +29,8 @@ base(teamplaysagainstteam(sportsteam,sportsteam)).
 base(teamplayssport(sportsteam,sport)).
 base(athleteplayssport(athlete,hobby)).
 
+option(negation,off).
+
 learn(athleteplayssport/2).
 
 example_mode(balance).

@@ -109,6 +109,8 @@ for t in targets:
             first = value[0]
             file.write('base('+str(first[1])+'('+str(first[4])+','+str(first[5])+')).\n')
         file.write('\n')
+        file.write('option(negation,off).\n')
+        file.write('\n')
         file.write('learn('+target+'/'+str(target_parity)+').\n')
         file.write('\n')
         file.write('example_mode('+ example_mode +').\n')

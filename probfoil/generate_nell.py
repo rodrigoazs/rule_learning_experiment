@@ -7,12 +7,10 @@ Created on Thu Aug 31 22:47:12 2017
 """
 
 # Importing the libraries
-import numpy as np
-import matplotlib.pyplot as plt
 import pandas as pd
-from random import shuffle
 import random
 import re
+import os
 
 def create_folds(data, size):
     length = int(len(data)/size) #length of each fold
@@ -29,7 +27,7 @@ def create_folds(data, size):
 # rule length = 5 (not mentioned in paper)
 
 # configuration
-dataset = pd.read_csv('NELL.sports.small.csv')
+dataset = pd.read_csv('../NELL.sports.08m.850.small.csv')
 target = 'athleteplaysforteam'
 target_parity = 2
 target_entity = 'athlete'
@@ -82,11 +80,25 @@ print('Number of constants per type (NELL sports dataset)')
 for const in consts:
     print(const + '\t' + str(len(consts[const])))
 
-ent = list(consts[target_entity])
-random.shuffle(ent)
-ent = create_folds(ent, n_folds)
-for i in range(n_folds):
-    with open('probfoil/sports_'+ target +'_fold_'+str(i+1)+'.data', 'w') as file:
+targets = [
+('athleteplaysinleague', 'athlete', 2),
+('teamplaysinleague', 'sportsteam', 2),
+('athleteplaysforteam', 'athlete', 2),
+('teamalsoknownas', 'sportsteam', 2),
+('athleteledsportsteam', 'athlete', 2),
+('teamplaysagainstteam', 'sportsteam', 2),
+('teamplayssport', 'sportsteam', 2),
+('athleteplayssport', 'athlete', 2)
+]
+
+for t in targets:
+    target = t[0]
+    target_entity = t[1]
+    target_parity = t[2]
+    
+    if not os.path.exists(target):
+        os.mkdir(target)
+    with open(target + '/sports.settings', 'w') as file:
         for relation in relations:
             if relation != target:
                 file.write('mode('+str(relation)+'(+,+)).\n')
@@ -101,11 +113,14 @@ for i in range(n_folds):
         file.write('\n')
         file.write('example_mode('+ example_mode +').\n')
         file.write('\n')
-    #    for key, value in relations.items():
-    #        first = value[0]
-    #        file.write('base('+str(first[1])+'('+str(first[4])+','+str(first[5])+')).\n')
-    #    file.write('\n')
-        for key, value in relations.items():
-            for d in value:
-                if d[1] != target or d[0] in ent[i]:
-                    file.write(str(d[3])[:6]+'::' +str(d[1]) + '(' +str(d[0])+ ', '+str(d[2])+ ').\n')
+
+    ent = list(consts[target_entity])
+    random.shuffle(ent)
+    ent = create_folds(ent, n_folds)
+    for i in range(n_folds):
+
+        with open(target + '/sports_fold_'+str(i+1)+'.data', 'w') as file:
+            for key, value in relations.items():
+                for d in value:
+                    if d[1] != target or d[0] in ent[i]:
+                        file.write(str(d[3])[:6]+'::' +str(d[1]) + '(' +str(d[0])+ ', '+str(d[2])+ ').\n')

@@ -15,14 +15,14 @@ import pandas as pd
 
 iterations = set()
 dataset = []
-with open('NELL.08m.1070.esv.csv', 'r', encoding="utf8") as file:
+with open('NELL.08m.850.esv.csv', 'r', encoding="utf8") as file:
     for line in file:
         data = line.split('\t')
         if 'team' in data[1] or 'athlete' in data[1] or 'sport' in data[1] or 'league' in data[1]:
             dataset.append({'Entity': data[0], 'Relation': data[1], 'Value': data[2], 'Iteration': data[3], 'Probability': data[4]})
 
 df = pd.DataFrame(dataset)
-df.to_csv('NELL.sports.csv')
+df.to_csv('NELL.sports.08m.850.csv')
 
 print('Separados pelas palavras athlete, sport, team, league encontrados nas relacoes')
 relations = set()
@@ -51,7 +51,7 @@ for data in df.values:
             break
 
 df = pd.DataFrame(dataset2)
-df.to_csv('NELL.sports.small.csv')
+df.to_csv('NELL.sports.08m.850.small.csv')
 
 relations = set()
 relations_list = []

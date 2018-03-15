@@ -10,7 +10,6 @@ Created on Thu Aug 31 22:47:12 2017
 import pandas as pd
 import random
 import re
-import os
 
 def create_folds(data, size):
     length = int(len(data)/size) #length of each fold
@@ -28,101 +27,117 @@ def create_folds(data, size):
 
 # configuration
 dataset = pd.read_csv('../NELL.sports.08m.850.small.csv')
-target = 'athleteplaysforteam'
-target_parity = 2
-target_entity = 'athlete'
-example_mode = 'balance'
-n_folds = 5
+n_folds = 3
 # ============================================
 
-#relations_accepted = ['athleteplayssport','teamalsoknownas','athleteplaysforteam','teamplayssport']
-relations = {}
-for data in dataset.values:
-    entity_type = (data[1].split(':'))[1]
-    entity = (data[1].split(':'))[2]
-    probability = data[3]
-    relation = (data[4].split(':'))[1]
-    value_type = (data[5].split(':'))[1]
-    value = (data[5].split(':'))[2]
-       
-    entity = entity.lower() #.replace('_', '')
-    value = value.lower() #.replace('_', '')
-    #re.sub('[^a-zA-Z]', '', title[j])
-    entity = re.sub('[^a-z_]', '', entity)
-    value = re.sub('[^a-z_]', '', value)
-    
-    #entity and value cannot start with '_', otherwise it is considered variable (?)
-    entity = entity[1:] if entity[0] == '_' else entity
-    value = value[1:] if value[0] == '_' else value
-              
-    if relation in relations:
-        relations[relation].append([entity, relation, value, probability, entity_type, value_type])
-    else:
-        relations[relation] = [[entity, relation, value, probability, entity_type, value_type]]
-
-print('Number of facts per predicate (NELL sports dataset)')
-for relation in relations:
-    print(relation + '\t' + str(len(relations[relation])))
-    
-consts = {}
-for key, value in relations.items():
-    first_entity_type = value[0][4]
-    first_value_type = value[0][5]
-    for d in value:
-        if first_entity_type not in consts:
-            consts[first_entity_type] = set()
-        if first_value_type not in consts:
-            consts[first_value_type] = set()
-        consts[first_entity_type].add(d[0])
-        consts[first_value_type].add(d[2])
-        
-print('Number of constants per type (NELL sports dataset)')
-for const in consts:
-    print(const + '\t' + str(len(consts[const])))
-
 targets = [
-('athleteplaysinleague', 'athlete', 2),
-('teamplaysinleague', 'sportsteam', 2),
-('athleteplaysforteam', 'athlete', 2),
-('teamalsoknownas', 'sportsteam', 2),
-('athleteledsportsteam', 'athlete', 2),
-('teamplaysagainstteam', 'sportsteam', 2),
-('teamplayssport', 'sportsteam', 2),
-('athleteplayssport', 'athlete', 2)
+('athleteplaysinleague', 2),
+('teamplaysinleague', 2),
+('athleteplaysforteam', 2),
+('teamalsoknownas', 2),
+('athleteledsportsteam', 2),
+('teamplaysagainstteam', 2),
+('teamplayssport', 2),
+('athleteplayssport', 2)
 ]
 
-for t in targets:
-    target = t[0]
-    target_entity = t[1]
-    target_parity = t[2]
+def get_data(dataset, n_folds, target, target_parity):
+    #relations_accepted = ['athleteplayssport','teamalsoknownas','athleteplaysforteam','teamplayssport']
+    settings = ''
+    base = ''
+    folds = [''] * n_folds
     
-    if not os.path.exists(target):
-        os.mkdir(target)
-    with open(target + '/sports.settings', 'w') as file:
-        for relation in relations:
-            if relation != target:
-                file.write('mode('+str(relation)+'(+,+)).\n')
-                file.write('mode('+str(relation)+'(+,-)).\n')
-                file.write('mode('+str(relation)+'(-,+)).\n')
-        file.write('\n')
-        for key, value in relations.items():
-            first = value[0]
-            file.write('base('+str(first[1])+'('+str(first[4])+','+str(first[5])+')).\n')
-        file.write('\n')
-        file.write('option(negation,off).\n')
-        file.write('\n')
-        file.write('learn('+target+'/'+str(target_parity)+').\n')
-        file.write('\n')
-        file.write('example_mode('+ example_mode +').\n')
-        file.write('\n')
+    relations = {}
+    for data in dataset.values:
+        entity_type = (data[1].split(':'))[1]
+        entity = (data[1].split(':'))[2]
+        probability = data[3]
+        relation = (data[4].split(':'))[1]
+        value_type = (data[5].split(':'))[1]
+        value = (data[5].split(':'))[2]
+           
+        entity = entity.lower() #.replace('_', '')
+        value = value.lower() #.replace('_', '')
+        #re.sub('[^a-zA-Z]', '', title[j])
+        entity = re.sub('[^a-z_]', '', entity)
+        value = re.sub('[^a-z_]', '', value)
+        
+        #entity and value cannot start with '_', otherwise it is considered variable (?)
+        entity = entity[1:] if entity[0] == '_' else entity
+        value = value[1:] if value[0] == '_' else value
+                  
+        if relation in relations:
+            relations[relation].append([entity, relation, value, probability, entity_type, value_type])
+        else:
+            relations[relation] = [[entity, relation, value, probability, entity_type, value_type]]
 
-    ent = list(consts[target_entity])
-    random.shuffle(ent)
-    ent = create_folds(ent, n_folds)
+#    print('Number of facts per predicate (NELL sports dataset)')
+#    for relation in relations:
+#        print(relation + '\t' + str(len(relations[relation])))
+    
+#    consts = {}
+#    for key, value in relations.items():
+#        first_entity_type = value[0][4]
+#        first_value_type = value[0][5]
+#        for d in value:
+#            if first_entity_type not in consts:
+#                consts[first_entity_type] = set()
+#            if first_value_type not in consts:
+#                consts[first_value_type] = set()
+#            consts[first_entity_type].add(d[0])
+#            consts[first_value_type].add(d[2])
+        
+#    print('Number of constants per type (NELL sports dataset)')
+#    for const in consts:
+#        print(const + '\t' + str(len(consts[const])))
+
+   
+#    if not os.path.exists(target):
+#        os.mkdir(target)
+#    with open(target + '/sports.settings', 'w') as file:
+    for relation in relations:
+        if relation != target:
+            settings += 'mode('+str(relation)+'(+,+)).\n'
+            settings += 'mode('+str(relation)+'(+,-)).\n'
+            settings += 'mode('+str(relation)+'(-,+)).\n'
+    settings += '\n'
+    for key, value in relations.items():
+        first = value[0]
+        settings += 'base('+str(first[1])+'('+str(first[4])+','+str(first[5])+')).\n'
+    settings += '\n'
+    settings += 'option(negation,off).\n'
+    settings += '\n'
+    settings += 'learn('+target+'/'+str(target_parity)+').\n'
+    #settings += '\n'
+    #file.write('example_mode('+ example_mode +').\n')
+    settings += '\n'
+    
+    for key, value in relations.items():
+        for d in value:
+            if d[1] != target:
+                base += str(d[3])[:6]+'::' +str(d[1]) + '(' +str(d[0])+ ','+str(d[2])+ ').\n'
+
+    tar = relations[target]
+    random.shuffle(tar)
+    tar = create_folds(tar, n_folds)         
+    
     for i in range(n_folds):
+        tuples = {}
+        all_objects = set()
+        for d in tar[i]:
+            s = str(d[0])
+            o = str(d[2])
+            if s not in tuples:
+                tuples[s] = set([o])
+            else:
+                tuples[s].add(o)
+            all_objects.add(o)
 
-        with open(target + '/sports_fold_'+str(i+1)+'.data', 'w') as file:
-            for key, value in relations.items():
-                for d in value:
-                    if d[1] != target or d[0] in ent[i]:
-                        file.write(str(d[3])[:6]+'::' +str(d[1]) + '(' +str(d[0])+ ', '+str(d[2])+ ').\n')
+        # print positive and negative targets
+        for d in tar[i]:
+            folds[i] += str(d[3])[:6]+'::' +str(d[1]) + '(' +str(d[0])+ ','+str(d[2])+ ').\n'
+            rand_objects = all_objects.difference(tuples[str(d[0])])
+            folds[i] += '0.0::'+str(d[1]) + '(' +str(d[0])+ ','+str(random.choice(list(rand_objects)))+ ').\n'
+            
+    return [settings, base, folds]
+            

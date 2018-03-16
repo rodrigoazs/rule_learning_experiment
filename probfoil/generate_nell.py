@@ -1,15 +1,22 @@
-#!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-Created on Thu Aug 31 22:47:12 2017
+Created on Mon Mar 12 18:30:31 2018
 
-@author: rodrigo
+@author: Rodrigo Azevedo
 """
+
+# add the parent folder to python path
+import os, sys
+sys.path.insert(1, os.path.join(sys.path[0], '../../mprob2foil/'))
+
+from probfoil.probfoil import *
 
 # Importing the libraries
 import pandas as pd
+from itertools import product
 import random
 import re
+import time
 
 def create_folds(data, size):
     length = int(len(data)/size) #length of each fold
@@ -19,29 +26,8 @@ def create_folds(data, size):
     folds += [data[(size-1)*length:len(data)]]
     return folds
 
-# experiment
-# m = 1
-# p = 0.99
-# beam = 5 (default)
-# rule length = 5 (not mentioned in paper)
 
-# configuration
-dataset = pd.read_csv('../NELL.sports.08m.850.small.csv')
-n_folds = 3
-# ============================================
-
-targets = [
-('athleteplaysinleague', 2),
-('teamplaysinleague', 2),
-('athleteplaysforteam', 2),
-('teamalsoknownas', 2),
-('athleteledsportsteam', 2),
-('teamplaysagainstteam', 2),
-('teamplayssport', 2),
-('athleteplayssport', 2)
-]
-
-def get_data(dataset, n_folds, target, target_parity):
+def get_data(dataset, n_folds, target, target_parity, allow_negation=True, example_mode='balance'):
     #relations_accepted = ['athleteplayssport','teamalsoknownas','athleteplaysforteam','teamplayssport']
     settings = ''
     base = ''
@@ -71,30 +57,6 @@ def get_data(dataset, n_folds, target, target_parity):
         else:
             relations[relation] = [[entity, relation, value, probability, entity_type, value_type]]
 
-#    print('Number of facts per predicate (NELL sports dataset)')
-#    for relation in relations:
-#        print(relation + '\t' + str(len(relations[relation])))
-    
-#    consts = {}
-#    for key, value in relations.items():
-#        first_entity_type = value[0][4]
-#        first_value_type = value[0][5]
-#        for d in value:
-#            if first_entity_type not in consts:
-#                consts[first_entity_type] = set()
-#            if first_value_type not in consts:
-#                consts[first_value_type] = set()
-#            consts[first_entity_type].add(d[0])
-#            consts[first_value_type].add(d[2])
-        
-#    print('Number of constants per type (NELL sports dataset)')
-#    for const in consts:
-#        print(const + '\t' + str(len(consts[const])))
-
-   
-#    if not os.path.exists(target):
-#        os.mkdir(target)
-#    with open(target + '/sports.settings', 'w') as file:
     for relation in relations:
         if relation != target:
             settings += 'mode('+str(relation)+'(+,+)).\n'
@@ -105,11 +67,13 @@ def get_data(dataset, n_folds, target, target_parity):
         first = value[0]
         settings += 'base('+str(first[1])+'('+str(first[4])+','+str(first[5])+')).\n'
     settings += '\n'
-    settings += 'option(negation,off).\n'
+    if allow_negation == False:
+        settings += 'option(negation,off).\n'
     settings += '\n'
     settings += 'learn('+target+'/'+str(target_parity)+').\n'
-    #settings += '\n'
-    #file.write('example_mode('+ example_mode +').\n')
+    if example_mode != 'balance_incode':
+        settings += '\n'
+        settings += 'example_mode('+ example_mode +').\n'
     settings += '\n'
     
     for key, value in relations.items():
@@ -118,26 +82,65 @@ def get_data(dataset, n_folds, target, target_parity):
                 base += str(d[3])[:6]+'::' +str(d[1]) + '(' +str(d[0])+ ','+str(d[2])+ ').\n'
 
     tar = relations[target]
+    values = [set(), set()]
+    for d in tar:
+        values[0].add(str(d[0]))
+        values[1].add(str(d[2]))
+    
+    #random.shuffle(tar)
+    #tar = create_folds(tar, n_folds) 
+    pos_count = len(tar)
     random.shuffle(tar)
-    tar = create_folds(tar, n_folds)         
+    tar = create_folds(tar, n_folds)
+    neg_examples = list(product(*values))
+    random.shuffle(neg_examples)
+    neg_examples = neg_examples[:pos_count]
+    neg_examples = create_folds(neg_examples, n_folds)
     
     for i in range(n_folds):
-        tuples = {}
-        all_objects = set()
-        for d in tar[i]:
-            s = str(d[0])
-            o = str(d[2])
-            if s not in tuples:
-                tuples[s] = set([o])
-            else:
-                tuples[s].add(o)
-            all_objects.add(o)
-
         # print positive and negative targets
-        for d in tar[i]:
+        for j in range(len(tar[i])):
+            d = tar[i][j]
             folds[i] += str(d[3])[:6]+'::' +str(d[1]) + '(' +str(d[0])+ ','+str(d[2])+ ').\n'
-            rand_objects = all_objects.difference(tuples[str(d[0])])
-            folds[i] += '0.0::'+str(d[1]) + '(' +str(d[0])+ ','+str(random.choice(list(rand_objects)))+ ').\n'
+            #rand_objects = all_objects.difference(tuples[str(d[0])])
+            #folds[i] += '0.0::'+str(d[1]) + '(' +str(d[0])+ ','+str(random.choice(list(rand_objects)))+ ').\n'
+            if example_mode == 'balance_incode':
+                folds[i] += '0.0::'+str(d[1]) + '(' +str(neg_examples[i][j][0])+ ','+ neg_examples[i][j][1] + ').\n'
             
-    return [settings, base, folds]
-            
+    return {'settings': settings, 'base': base, 'folds': folds}
+
+dataset = pd.read_csv('../NELL.sports.08m.850.small.csv')
+n_folds = 3
+# ============================================
+
+targets = [
+('athleteplaysinleague', 2),
+#('teamplaysinleague', 2),
+('athleteplaysforteam', 2),
+#('teamalsoknownas', 2),
+#('athleteledsportsteam', 2),
+#('teamplaysagainstteam', 2),
+#('teamplayssport', 2),
+('athleteplayssport', 2)
+]
+
+for tg in targets:
+    data = get_data(dataset, 3, tg[0], tg[1], example_mode='balance_incode')
+    
+    time_start = time.time()
+    # cross-validation
+    for i in range(n_folds):
+        settings = data['settings']
+        train = data['base']
+        test = data['base']
+        for j in range(n_folds):
+            if j == i:
+                test += data['folds'][j]
+            else:
+                train += data['folds'][j]
+        probfoil(settings=settings, train=train, test=test, l=5, verbose=1, allow_negation=False, example_mode='balance_incode')
+    time_total = time.time() - time_start
+    print ('\nCross-validation finished')
+    print ('Total time:\t%.4fs' % time_total)
+    print ('\n')           
+                      

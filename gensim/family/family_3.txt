@@ -1,0 +1,80 @@
+parent(bart,stijn).
+parent(bart,pieter).
+parent(luc,soetkin).
+parent(willem,lieve).
+parent(willem,katleen).
+parent(rene,willem).
+parent(rene,lucy).
+parent(leon,rose).
+parent(etienne,luc).
+parent(etienne,an).
+parent(prudent,esther).
+
+parent(katleen,stijn).
+parent(katleen,pieter).
+parent(lieve,soetkin).
+parent(esther,lieve).
+parent(esther,katleen).
+parent(yvonne,willem).
+parent(yvonne,lucy).
+parent(alice,rose).
+parent(rose,luc).
+parent(rose,an).
+parent(laura,esther).
+
+
+female(alice).
+female(an).
+female(esther).
+female(katleen).
+female(laura).
+female(lieve).
+female(lucy).
+female(rose).
+female(soetkin).
+female(yvonne).
+
+father(bart, stijn).
+father(bart, pieter).
+father(luc, soetkin).
+father(willem, lieve).
+father(willem, katleen).
+father(rene, willem).
+father(rene, lucy).
+father(leon, rose).
+father(etienne, luc).
+father(etienne, an).
+father(prudent, esther).
+
+mother(katleen, stijn).
+mother(katleen, pieter).
+mother(lieve, soetkin).
+mother(esther, lieve).
+mother(esther, katleen).
+mother(yvonne, willem).
+mother(yvonne, lucy).
+mother(alice, rose).
+mother(rose, luc).
+mother(rose, an).
+mother(laura, esther).
+
+male(bart).
+male(etienne).
+male(leon).
+male(luc).
+male(pieter).
+male(prudent).
+male(rene).
+male(stijn).
+male(willem).
+
+grandmother(esther,soetkin).
+grandmother(esther,stijn).
+grandmother(esther,pieter).
+grandmother(yvonne,lieve).
+grandmother(yvonne,katleen).
+grandmother(alice,luc).
+grandmother(alice,an).
+grandmother(rose,soetkin).
+grandmother(laura,lieve).
+grandmother(laura,katleen).

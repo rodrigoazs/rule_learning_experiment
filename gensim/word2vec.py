@@ -8,6 +8,8 @@ Created on Sat Mar 24 14:13:54 2018
 
 from gensim.models import KeyedVectors
 from gensim.scripts.glove2word2vec import glove2word2vec
+from sklearn.decomposition import PCA
+from matplotlib import pyplot
 
 #glove2word2vec('glove.6B.300d.txt', 'glove.6B.300d.word2vec.txt')
 model = KeyedVectors.load_word2vec_format('glove.6B.300d.word2vec.txt')
@@ -61,9 +63,20 @@ target_maps = {
 source_words = ['worked', 'member', 'female', 'genre', 'actor', 'director', 'person', 'movie']
 target_words = ['professor', 'student', 'position', 'taught', 'advised', 'assistant', 'publication', 'faculty', 'person', 'course', 'title']
 
-
-
 words = source_words + target_words
+
+# fit a 2d PCA model to the vectors
+X = model[model.wv.vocab]
+pca = PCA(n_components=2)
+result = pca.fit_transform(X)
+# create a scatter plot of the projection
+fig = pyplot.figure(figsize=(10,10))
+words_ = list(model.wv.vocab)
+for i, word in enumerate(words_):
+    if word in words:
+        pyplot.scatter(result[i, 0], result[i, 1])
+        pyplot.annotate(word, xy=(result[i, 0], result[i, 1]))
+pyplot.show()
 
 to_remove = []
 for key in model.wv.vocab:
@@ -80,7 +93,7 @@ for i in to_remove:
     except:
         pass
 
-teste = model.most_similar(positive=['student', 'worked'], negative=['actor'], topn=400000)
+teste = model.most_similar(positive=['publication', 'movie'], negative=['member'], topn=400000)
 for k in teste:
     if k[0] in words:
         print(k)
